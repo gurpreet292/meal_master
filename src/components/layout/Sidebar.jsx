@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, CalendarDays, BookOpen, Activity, ShoppingCart, Users, Settings, LogOut, ChefHat } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { LayoutDashboard, CalendarDays, BookOpen, Activity, ShoppingCart, Users, Settings, LogOut, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const Sidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const navigate = useNavigate();
-
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Meal Planner', path: '/planner', icon: CalendarDays },
@@ -17,22 +14,26 @@ const Sidebar = () => {
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
 
-  return (
-    <motion.div
-      initial={{ x: -256 }}
-      animate={{ x: 0 }}
-      transition={{ duration: 0.3 }}
-      className="hidden lg:flex flex-col w-64 h-screen bg-card/60 backdrop-blur-xl border-r border-border fixed left-0 top-0 z-40"
-    >
+  const sidebarContent = (
+    <>
       {/* Logo */}
-      <div className="flex items-center gap-3 p-6 border-b border-border">
-        <motion.div
-          whileHover={{ rotate: 10 }}
-          className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center text-white font-bold shadow-lg"
+      <div className="flex items-center justify-between p-6 border-b border-border">
+        <div className="flex items-center gap-3">
+          <motion.div
+            whileHover={{ rotate: 10 }}
+            className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center text-white font-bold shadow-lg"
+          >
+            MM
+          </motion.div>
+          <span className="font-heading font-bold text-xl text-foreground">MealMaster</span>
+        </div>
+        {/* Mobile Close Button */}
+        <button 
+          onClick={() => setIsOpen(false)}
+          className="lg:hidden p-2 hover:bg-card rounded-lg text-muted-foreground hover:text-foreground"
         >
-          MM
-        </motion.div>
-        <span className="font-heading font-bold text-xl text-foreground">MealMaster</span>
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -41,6 +42,7 @@ const Sidebar = () => {
           <NavLink
             key={item.name}
             to={item.path}
+            onClick={() => setIsOpen(false)}
             className={({ isActive }) =>
               `relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium group ${
                 isActive
@@ -90,7 +92,33 @@ const Sidebar = () => {
           </button>
         </div>
       </div>
-    </motion.div>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar Drawer */}
+      <div
+        className={`fixed left-0 top-0 z-50 h-screen w-64 bg-card/95 backdrop-blur-xl border-r border-border flex flex-col transition-transform duration-300 lg:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        {sidebarContent}
+      </div>
+    </>
   );
 };
 

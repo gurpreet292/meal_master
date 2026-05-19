@@ -82,195 +82,135 @@ const Planner = () => {
     return total;
   };
 
+  const dayAssets = {
+    Monday: { img: '/berry_quinoa_topdown_1779170262202.png', title: 'BERRY QUINOA BOWL', subtitle: 'MATCHA AVOCADO SMOOTHIE', desc: 'Berries and quinoa are packed with polyphenols and plant protein for recovery. Matcha-avocado smoothie adds creamy calm and steady energy.' },
+    Tuesday: { img: '/scrambled_eggs_topdown_1779170230608.png', title: 'SCRAMBLED EGGS', subtitle: 'ICED MATCHA LATTE', desc: 'Mushroom and spinach deliver B vitamins and minerals to fight stress. Matcha latte supports focus and calm clarity.' },
+    Wednesday: { img: '/salmon_wrap_topdown_1779170173897.png', title: 'SMOKED SALMON WRAP', subtitle: 'PEACH OOLONG MATCHA', desc: 'Salmon and arugula are rich in omega-3 and chlorophyll, great for reducing stress and inflammation. Peach oolong matcha is refreshing and mood-lifting.' },
+    Thursday: { img: '/berry_quinoa_topdown_1779170262202.png', title: 'COTTAGE CHEESE', subtitle: 'SUPERBA MATCHA', desc: 'Pineapple and cheese provide enzymes and protein for digestion. Superba matcha gently restores before a new week begins.' },
+    Friday: { img: '/scrambled_eggs_topdown_1779170230608.png', title: 'AVOCADO TOAST', subtitle: 'ICED GREEN TEA', desc: 'Healthy fats to fuel your brain and keep you satiated throughout the final workday.' },
+    Saturday: { img: '/salmon_wrap_topdown_1779170173897.png', title: 'CHICKEN SALAD', subtitle: 'DETOX WATER', desc: 'Light and refreshing weekend meal to keep your energy up.' },
+    Sunday: { img: '/berry_quinoa_topdown_1779170262202.png', title: 'PROTEIN PANCAKES', subtitle: 'BLACK COFFEE', desc: 'A hearty, comforting start to a relaxing Sunday morning.' },
+  };
+
+  const ArrowSVG = ({ flip = false }) => (
+    <svg 
+      className={`absolute hidden md:block w-16 h-16 text-sage-dark ${flip ? 'right-[-4rem] top-4 transform scale-x-[-1]' : 'left-[-4rem] top-4'}`} 
+      viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M10,50 Q40,10 90,50" stroke="currentColor" strokeWidth="2" fill="transparent" />
+      <path d="M80,40 L90,50 L80,60" stroke="currentColor" strokeWidth="2" fill="transparent" />
+    </svg>
+  );
+
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen pb-20 bg-cream-base dark:bg-card">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-20 z-30 bg-background/95 backdrop-blur-sm border-b border-border"
+        className="sticky top-20 z-30 bg-cream-base/95 dark:bg-card/95 backdrop-blur-sm border-b border-cream-border dark:border-border"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground flex items-center gap-3">
-            <Calendar className="w-8 h-8 text-green-700" />
-            Weekly Meal Planner
-          </h1>
-          <p className="text-muted-foreground text-sm sm:text-base">Plan your meals for the week and maintain your goals</p>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4 flex flex-col sm:flex-row sm:items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-serif italic text-sage-dark dark:text-sage-light tracking-tight">
+              Weekly Plan
+            </h1>
+            <p className="text-sage-muted dark:text-muted-foreground text-sm mt-1">7-Day Cortisol-Friendly Meals</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" className="border-sage-dark text-sage-dark hover:bg-sage-dark/10 dark:border-sage dark:text-sage">
+              <Download className="w-4 h-4 mr-2" /> Export
+            </Button>
+            <Button className="bg-sage-main hover:bg-sage-dark text-white">
+              <Save className="w-4 h-4 mr-2" /> Save
+            </Button>
+          </div>
         </div>
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex flex-col sm:flex-row gap-3 flex-wrap"
-        >
-          <Button className="flex items-center gap-2 flex-1 sm:flex-auto">
-            <Sparkles className="w-4 h-4" />
-            AI Suggest Meals
-          </Button>
-          <Button variant="secondary" onClick={handleSavePlan} className="flex items-center gap-2 flex-1 sm:flex-auto">
-            <Save className="w-4 h-4" />
-            Save Plan
-          </Button>
-          <Button variant="outline" className="flex items-center gap-2 flex-1 sm:flex-auto">
-            <Download className="w-4 h-4" />
-            Export
-          </Button>
-          <Button variant="outline" className="flex items-center gap-2 flex-1 sm:flex-auto">
-            <Share2 className="w-4 h-4" />
-            Share
-          </Button>
-        </motion.div>
-
-        {/* Weekly Grid */}
-        <motion.div
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: { staggerChildren: 0.05 }
-            }
-          }}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6"
-        >
-          {days.map((day, dayIdx) => (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+        {days.map((day, dayIdx) => {
+          const isEven = dayIdx % 2 === 0;
+          const data = dayAssets[day];
+          
+          return (
             <motion.div
               key={day}
-              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6 }}
+              className={`flex flex-col md:flex-row items-center gap-8 md:gap-16 ${isEven ? '' : 'md:flex-row-reverse'}`}
             >
-              <Card className="card-elevated h-full flex flex-col">
-                <CardHeader className="pb-3 sm:pb-4 border-b border-border">
-                  <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                    <span className="text-green-600 font-bold">{dayIdx + 1}</span>
-                    <span className="truncate">{day}</span>
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    {calculateNutrition(day, 'Breakfast').totalCals + 
-                     calculateNutrition(day, 'Lunch').totalCals +
-                     calculateNutrition(day, 'Dinner').totalCals +
-                     calculateNutrition(day, 'Snack').totalCals} cal
-                  </CardDescription>
-                </CardHeader>
+              {/* Image Section */}
+              <div className="w-full md:w-1/2 flex justify-center relative">
+                <motion.div 
+                  whileHover={{ scale: 1.05, rotate: isEven ? 2 : -2 }}
+                  className="relative w-64 h-64 sm:w-80 sm:h-80"
+                >
+                  <img 
+                    src={data.img} 
+                    alt={data.title}
+                    className="w-full h-full object-cover rounded-full shadow-2xl shadow-sage-dark/20 mix-blend-multiply dark:mix-blend-normal border-4 border-white/50"
+                  />
+                  {/* Decorative element like a glass of matcha next to it could go here */}
+                </motion.div>
+                
+                {/* Day Label Overlaid */}
+                <h2 className={`absolute ${isEven ? '-bottom-6 -right-4' : '-bottom-6 -left-4'} text-5xl sm:text-6xl font-serif italic font-bold text-sage-dark dark:text-sage opacity-90 drop-shadow-sm`}>
+                  {day}
+                </h2>
+              </div>
 
-                <CardContent className="flex-1 overflow-y-auto py-3 sm:py-4 space-y-3 sm:space-y-4">
-                  {mealTypes.map((mealType) => (
-                    <div key={mealType} className="space-y-2">
-                      <div className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-green-600"></span>
-                        {mealType}
+              {/* Text Section */}
+              <div className="w-full md:w-1/2 relative space-y-4">
+                <ArrowSVG flip={!isEven} />
+                
+                <div className="space-y-1">
+                  <h3 className="text-xl sm:text-2xl font-bold tracking-widest text-sage-main dark:text-sage-light uppercase">
+                    {data.title}
+                  </h3>
+                  <h4 className="text-sm sm:text-base font-semibold tracking-wider text-sage-light dark:text-sage/80 uppercase">
+                    {data.subtitle}
+                  </h4>
+                </div>
+
+                <div className="w-full border-t-[3px] border-dotted border-sage-light dark:border-sage/30 my-4" />
+
+                <p className="text-sage-muted dark:text-muted-foreground text-sm leading-relaxed max-w-sm">
+                  {data.desc}
+                </p>
+
+                {/* Actual dynamically added meals below the featured one */}
+                <div className="pt-4 space-y-2">
+                  {mealTypes.map(mealType => {
+                    const meals = mealPlan[day]?.[mealType] || [];
+                    if (meals.length === 0) return null;
+                    return (
+                      <div key={mealType} className="flex gap-2 text-xs">
+                        <span className="font-semibold text-sage-dark dark:text-sage-light uppercase">{mealType}:</span>
+                        <span className="text-sage-muted dark:text-muted-foreground">
+                          {meals.map(m => m.name).join(', ')}
+                        </span>
                       </div>
-
-                      {/* Meal Items */}
-                      <div className="space-y-2">
-                        {(mealPlan[day]?.[mealType] || []).map((meal) => (
-                          <motion.div
-                            key={meal.id}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -10 }}
-                            className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg group hover:bg-green-100 transition"
-                          >
-                            <span className="text-xs sm:text-sm text-foreground truncate">{meal.name}</span>
-                            <button
-                              onClick={() => removeMeal(day, mealType, meal.id)}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
-                            </button>
-                          </motion.div>
-                        ))}
-                      </div>
-
-                      {/* Add Meal Button */}
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => {
-                          setSelectedDay({ day, mealType });
-                        }}
-                        className="w-full p-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-400 hover:bg-green-50 transition text-xs sm:text-sm text-muted-foreground hover:text-foreground flex items-center justify-center gap-1"
-                      >
-                        <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
-                        Add
-                      </motion.button>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
+                    );
+                  })}
+                  
+                  {/* Add Button */}
+                  <button
+                    onClick={() => setSelectedDay({ day, mealType: 'Lunch' })}
+                    className="mt-2 text-xs font-semibold text-sage-light hover:text-sage-main dark:text-sage dark:hover:text-sage-light flex items-center gap-1 transition-colors"
+                  >
+                    <Plus className="w-3 h-3" /> Customize Day
+                  </button>
+                </div>
+              </div>
             </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Weekly Summary */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-4"
-        >
-          <Card className="bg-orange-50 border-orange-200">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-orange-600">{getTotalWeeklyCalories()}</div>
-                <div className="text-xs sm:text-sm text-orange-600 font-medium mt-1">Total Calories</div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-blue-50 border-blue-200">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-600">{days.length}</div>
-                <div className="text-xs sm:text-sm text-blue-600 font-medium mt-1">Days Planned</div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-green-50 border-green-200">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-green-600">{Math.round(getTotalWeeklyCalories() / 7)}</div>
-                <div className="text-xs sm:text-sm text-green-600 font-medium mt-1">Avg Daily</div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-purple-50 border-purple-200">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-purple-600">100%</div>
-                <div className="text-xs sm:text-sm text-purple-600 font-medium mt-1">Complete</div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Quick Tips */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.55 }}>
-          <Card className="bg-gradient-to-r from-green-50 to-blue-50">
-            <CardContent className="pt-6 sm:pt-8">
-              <h3 className="font-bold text-base sm:text-lg text-foreground mb-4">📋 Planning Tips</h3>
-              <ul className="space-y-2 text-xs sm:text-sm text-foreground">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600 font-bold">•</span>
-                  <span>Plan your meals at the beginning of the week for better prep</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600 font-bold">•</span>
-                  <span>Mix proteins, carbs, and healthy fats in each meal</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600 font-bold">•</span>
-                  <span>Save your plan to track and adjust as you go</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-        </motion.div>
+          );
+        })}
       </div>
 
-      {/* Add Meal Modal */}
+      {/* Add Meal Modal (Preserved logic) */}
       <AnimatePresence>
         {selectedDay && (
           <motion.div
@@ -289,36 +229,27 @@ const Planner = () => {
             >
               <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border">
                 <h2 className="text-lg sm:text-xl font-bold text-foreground">
-                  Add {selectedDay?.mealType} for {selectedDay?.day}
+                  Add Meal for {selectedDay?.day}
                 </h2>
                 <button
                   onClick={() => setSelectedDay(null)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition"
                 >
-                  <Trash2 className="w-5 h-5" />
+                  <Trash2 className="w-5 h-5 text-red-500 hover:text-red-600" />
                 </button>
               </div>
 
               <div className="p-4 sm:p-6 space-y-4">
-                {/* Recipe Suggestions */}
-                <div>
-                  <label className="block text-xs sm:text-sm font-medium text-foreground mb-3">Select or enter meal:</label>
-                  <div className="space-y-2 max-h-40 overflow-y-auto mb-3">
-                    {recipes?.slice(0, 5).map(recipe => (
-                      <motion.button
-                        key={recipe.id}
-                        whileHover={{ scale: 1.02 }}
-                        onClick={() => {
-                          addMeal(selectedDay.day, selectedDay.mealType, recipe.name);
-                          setSelectedDay(null);
-                        }}
-                        className="w-full text-left p-3 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition text-xs sm:text-sm"
-                      >
-                        <p className="font-medium text-foreground">{recipe.name}</p>
-                        <p className="text-xs text-muted-foreground">{recipe.calories} cal • {recipe.protein}g protein</p>
-                      </motion.button>
-                    ))}
-                  </div>
+                <div className="flex gap-2 mb-4">
+                  {mealTypes.map(type => (
+                    <button
+                      key={type}
+                      onClick={() => setSelectedDay({ ...selectedDay, mealType: type })}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${selectedDay.mealType === type ? 'bg-sage-main text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    >
+                      {type}
+                    </button>
+                  ))}
                 </div>
 
                 {/* Custom Meal Input */}
@@ -326,8 +257,8 @@ const Planner = () => {
                   type="text"
                   value={newMeal}
                   onChange={(e) => setNewMeal(e.target.value)}
-                  placeholder="Or type custom meal..."
-                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/50 text-sm"
+                  placeholder="Type custom meal..."
+                  className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-sage-main/50 text-sm"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       addMeal(selectedDay.day, selectedDay.mealType, newMeal);
@@ -350,7 +281,7 @@ const Planner = () => {
                       setSelectedDay(null);
                     }}
                     disabled={!newMeal.trim()}
-                    className="flex-1"
+                    className="flex-1 bg-sage-main hover:bg-sage-dark text-white border-none"
                   >
                     Add Meal
                   </Button>

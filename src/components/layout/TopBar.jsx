@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bell, Search, Sun, Moon } from 'lucide-react';
+import { Bell, Search, Sun, Moon, Menu } from 'lucide-react';
 
-const TopBar = () => {
+const TopBar = ({ onMenuClick }) => {
   const [isDark, setIsDark] = React.useState(false);
 
   const handleThemeToggle = () => {
@@ -19,10 +19,18 @@ const TopBar = () => {
       initial={{ y: -80 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.4 }}
-      className="sticky top-0 z-30 w-full h-16 bg-card/40 backdrop-blur-xl border-b border-border flex items-center justify-between px-4 sm:px-6 lg:px-8"
+      className="sticky top-0 z-30 w-full h-16 bg-card/80 backdrop-blur-xl border-b border-border flex items-center justify-between px-4 sm:px-6 lg:px-8"
     >
+      {/* Mobile Menu Button */}
+      <button 
+        onClick={onMenuClick}
+        className="lg:hidden p-2 mr-2 hover:bg-card rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <Menu className="w-6 h-6" />
+      </button>
+
       {/* Search Bar */}
-      <div className="flex-1 max-w-sm">
+      <div className="flex-1 max-w-sm hidden sm:block">
         <div className="relative group">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-sage transition-colors" />
           <input
