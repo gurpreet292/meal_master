@@ -298,14 +298,14 @@
 
   /* Text gradients */
   .text-gradient {
-    background: linear-gradient(90deg, #6B9E75 to #FFB86B);
+    background: linear-gradient(90deg, #6B9E75 0%, #FFB86B 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .text-gradient-warm {
-    background: linear-gradient(90deg, #F4A460 to #E8C547);
+    background: linear-gradient(90deg, #F4A460 0%, #E8C547 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
