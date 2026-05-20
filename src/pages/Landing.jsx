@@ -266,7 +266,7 @@ const Landing = () => {
           <p className="text-xl text-sage-light/90 mb-10 max-w-2xl mx-auto font-light relative z-10">
             Join MealMaster today and let AI curate the perfect wellness journey for your unique body and mind.
           </p>
-          <Button onClick={() => navigate('/register')} className="bg-white text-sage-dark hover:bg-cream-base rounded-full py-8 px-10 text-xl font-bold shadow-xl flex items-center justify-center gap-2 mx-auto transition-transform hover:scale-105 relative z-10">
+          <Button onClick={() => navigate('/register')} className="!bg-white !text-sage-dark hover:!bg-cream-base hover:!text-sage-dark rounded-full py-8 px-10 text-xl font-bold shadow-xl flex items-center justify-center gap-2 mx-auto transition-transform hover:scale-105 relative z-10">
             Start Your Free Trial <ArrowRight className="w-6 h-6" />
           </Button>
         </div>

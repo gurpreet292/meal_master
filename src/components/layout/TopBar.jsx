@@ -19,7 +19,7 @@ const TopBar = ({ onMenuClick }) => {
       initial={{ y: -80 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.4 }}
-      className="sticky top-0 z-30 w-full h-16 bg-card/80 backdrop-blur-xl border-b border-border flex items-center justify-between px-4 sm:px-6 lg:px-8"
+      className="sticky top-0 z-40 w-full h-16 bg-card/80 backdrop-blur-xl border-b border-border flex items-center justify-between px-4 sm:px-6 lg:px-8"
     >
       {/* Mobile Menu Button */}
       <button 

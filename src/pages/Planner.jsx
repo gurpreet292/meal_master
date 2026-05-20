@@ -108,7 +108,7 @@ const Planner = () => {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-20 z-30 bg-cream-base/95 dark:bg-card/95 backdrop-blur-sm border-b border-cream-border dark:border-border"
+        className="relative z-10 bg-cream-base/95 dark:bg-card/95 backdrop-blur-sm border-b border-cream-border dark:border-border"
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4 flex flex-col sm:flex-row sm:items-center justify-between">
           <div>

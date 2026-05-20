@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, Sparkles, BarChart3, Users } from 'lucide-react';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
 import { Button, Input, Label } from '@/components/ui';
 import { useApp } from '@/context/AppProvider';
@@ -69,12 +69,12 @@ const Auth = () => {
             className="space-y-4 text-left"
           >
             {[
-              { icon: '✨', text: 'AI-powered personalized meals' },
-              { icon: '📊', text: 'Track nutrition effortlessly' },
-              { icon: '👥', text: 'Join our healthy community' }
+              { icon: Sparkles, text: 'AI-powered personalized meals' },
+              { icon: BarChart3, text: 'Track nutrition effortlessly' },
+              { icon: Users, text: 'Join our healthy community' }
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-3 text-lg text-foreground">
-                <span className="text-3xl">{item.icon}</span>
+                <item.icon className="w-7 h-7 text-sage flex-shrink-0" />
                 <span>{item.text}</span>
               </div>
             ))}
