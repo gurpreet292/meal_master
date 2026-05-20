@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Heart, MessageCircle, Bookmark, Share2, Plus, Flame, TrendingUp, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui';
@@ -61,12 +62,30 @@ const Community = () => {
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
-        className="sticky top-20 z-30 bg-cream-base/80 backdrop-blur-xl border-b border-cream-border"
+        className="relative z-10 bg-cream-base/80 backdrop-blur-xl border-b border-cream-border"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-2 flex justify-between items-center">
-          <div>
-            <h1 className="text-4xl font-serif italic text-sage-dark tracking-tight">Community</h1>
-            <p className="text-sage-muted text-sm mt-1">Connect, share, and grow together</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center gap-4">
+          <div className="flex items-center gap-4">
+            <Link
+              to="/"
+              className="group flex items-center gap-3 rounded-2xl border border-cream-border bg-white/70 px-3 py-2 hover:bg-white transition-colors"
+              aria-label="Go to home page"
+            >
+              <div className="w-10 h-10 rounded-xl bg-sage/15 border border-sage/20 flex items-center justify-center shadow-sm overflow-hidden">
+                <img
+                  src="/media__1779169959032.png"
+                  alt="MealMaster logo"
+                  className="w-7 h-7 rounded-md object-cover"
+                />
+              </div>
+              <span className="hidden sm:inline text-sm font-semibold text-sage-dark group-hover:text-sage-main transition-colors">
+                MealMaster Home
+              </span>
+            </Link>
+            <div>
+              <h1 className="text-4xl font-serif italic text-sage-dark tracking-tight">Community</h1>
+              <p className="text-sage-muted text-sm mt-1">Connect, share, and grow together</p>
+            </div>
           </div>
           <Button className="bg-sage-main hover:bg-sage-dark text-white rounded-full flex items-center gap-2 shadow-lg shadow-sage-main/20">
             <Plus className="w-5 h-5" /> New Post

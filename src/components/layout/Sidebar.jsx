@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { LayoutDashboard, CalendarDays, BookOpen, Activity, ShoppingCart, Users, Settings, LogOut, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -18,15 +18,21 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     <>
       {/* Logo */}
       <div className="flex items-center justify-between p-6 border-b border-border">
-        <div className="flex items-center gap-3">
+        <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-3 group">
           <motion.div
-            whileHover={{ rotate: 10 }}
-            className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center text-white font-bold shadow-lg"
+            whileHover={{ rotate: 6, scale: 1.03 }}
+            className="w-10 h-10 rounded-xl bg-sage/15 border border-sage/20 flex items-center justify-center shadow-sm overflow-hidden"
           >
-            MM
+            <img
+              src="/media__1779169959032.png"
+              alt="MealMaster logo"
+              className="w-7 h-7 object-cover rounded-md"
+            />
           </motion.div>
-          <span className="font-heading font-bold text-xl text-foreground">MealMaster</span>
-        </div>
+          <span className="font-heading font-bold text-xl text-foreground group-hover:text-sage transition-colors">
+            MealMaster
+          </span>
+        </Link>
         {/* Mobile Close Button */}
         <button 
           onClick={() => setIsOpen(false)}
