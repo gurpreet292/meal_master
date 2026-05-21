@@ -1,63 +1,138 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import api from '@/lib/api';
 import mockApi from '@/lib/mockApi';
 
 const AppContext = createContext(null);
 
 export const AppProvider = ({ children }) => {
-  const [user, setUser] = useState(() => mockApi.getCurrentUser());
-  const [recipes, setRecipes] = useState(() => mockApi.getRecipes());
-  const [plan, setPlan] = useState(() => (user ? mockApi.getPlan(user.id) : null));
-  const [logs, setLogs] = useState(() => (user ? mockApi.getLogs(user.id) : []));
+  const normalizeRecipe = (item) => ({
+    ...item,
+    name: item.name || item.title || 'Untitled Meal'
+  });
+  const [user, setUser] = useState(() => api.getCurrentUser());
+  const [recipes, setRecipes] = useState([]);
+  const [plan, setPlan] = useState(null);
+  const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    if (user) setPlan(mockApi.getPlan(user.id));
-    if (user) setLogs(mockApi.getLogs(user.id));
-  }, [user]);
+    let active = true;
+    api.getMeals()
+      .then((data) => {
+        if (active) {
+          const list = Array.isArray(data) ? data.map(normalizeRecipe) : [];
+          setRecipes(list);
+        }
+      })
+      .catch(() => {
+        if (active) setRecipes(mockApi.getRecipes());
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const userId = user?.id;
+    let active = true;
+    const loadUserData = async () => {
+      if (!userId) {
+        setPlan(null);
+        setLogs([]);
+        return;
+      }
+      try {
+        const [planRes, logsRes, profileRes] = await Promise.all([
+          api.getPlan(),
+          api.getLogs(),
+          api.getProfile()
+        ]);
+        if (!active) return;
+        setPlan(planRes?.plan ?? null);
+        setLogs(logsRes?.logs ?? []);
+        if (profileRes) {
+          setUser((prev) => {
+            if (!prev) return prev;
+            const next = {
+              ...prev,
+              name: profileRes.name ?? prev.name,
+              preferences: profileRes.preferences ?? prev.preferences
+            };
+            if (next.name === prev.name && JSON.stringify(next.preferences) === JSON.stringify(prev.preferences)) {
+              return prev;
+            }
+            return next;
+          });
+        }
+      } catch {
+        if (!active) return;
+        setPlan(userId ? mockApi.getPlan(userId) : null);
+        setLogs(userId ? mockApi.getLogs(userId) : []);
+      }
+    };
+    loadUserData();
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
 
   const register = async (payload) => {
-    const u = mockApi.register(payload);
+    const u = await api.register(payload);
     setUser(u);
     return u;
   };
 
   const login = async (payload) => {
-    const u = mockApi.login(payload);
+    const u = await api.login(payload);
     setUser(u);
     return u;
   };
 
   const logout = () => {
-    mockApi.logout();
+    api.logout();
     setUser(null);
     setPlan(null);
     setLogs([]);
   };
 
-  const createRecipe = (data) => {
-    const r = mockApi.addRecipe(data);
-    setRecipes(prev => [r, ...prev]);
-    return r;
+  const createRecipe = async (data) => {
+    try {
+      const payload = {
+        title: data.name || data.title || 'Untitled Meal',
+        description: data.description || '',
+        price: Number.isFinite(data.price) ? data.price : 0,
+        image: data.image
+      };
+  const created = await api.createMeal(payload);
+  const normalized = normalizeRecipe(created);
+  setRecipes((prev) => [normalized, ...prev]);
+  return normalized;
+    } catch {
+      const r = mockApi.addRecipe(data);
+      setRecipes((prev) => [r, ...prev]);
+      return r;
+    }
   };
 
-  const savePlan = (p) => {
+  const savePlan = async (p) => {
     if (!user) throw new Error('Not authenticated');
-    mockApi.savePlan(user.id, p);
-    setPlan(p);
+    const saved = await api.savePlan(p);
+    setPlan(saved.plan ?? p);
   };
 
   const generateGroceryList = (p) => mockApi.generateGroceryList(p);
 
-  const logFood = (entry) => {
+  const logFood = async (entry) => {
     if (!user) throw new Error('Not authenticated');
-    const all = mockApi.logFood(user.id, entry);
-    setLogs(all);
-    return all;
+    const res = await api.logFood(entry);
+    const updated = res.logs ?? [];
+    setLogs(updated);
+    return updated;
   };
 
-  const updateProfile = (patch) => {
+  const updateProfile = async (patch) => {
     if (!user) throw new Error('Not authenticated');
-    const updated = mockApi.updateProfile(user.id, patch);
-    setUser(updated);
+    const updated = await api.updateProfile(patch);
+    setUser((prev) => prev ? { ...prev, ...updated } : updated);
     return updated;
   };
 
