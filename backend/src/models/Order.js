@@ -10,9 +10,13 @@ const orderSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   items: [orderItemSchema],
   totalAmount: { type: Number, required: true },
-  status: { type: String, enum: ['pending', 'processing', 'completed', 'cancelled'], default: 'pending' },
-  paymentStatus: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },
-  shippingAddress: { type: String }
+  paymentStatus: { type: String, enum: ['pending', 'paid'], default: 'pending' },
+  paymentProvider: { type: String, enum: ['razorpay'], default: 'razorpay' },
+  paymentId: { type: String },
+  paymentOrderId: { type: String },
+  paymentSignature: { type: String },
+  orderStatus: { type: String, enum: ['processing', 'confirmed', 'delivered', 'cancelled'], default: 'processing' },
+  deliveryAddress: { type: String, required: true }
 }, { timestamps: true });
 
 export default mongoose.model('Order', orderSchema);

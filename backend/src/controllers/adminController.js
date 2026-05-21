@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import Order from '../models/Order.js';
 import Meal from '../models/Meal.js';
+import { successResponse } from '../utils/responseHandler.js';
 
 export const getDashboardStats = async (req, res, next) => {
   try {
@@ -11,7 +12,7 @@ export const getDashboardStats = async (req, res, next) => {
       { $match: { paymentStatus: 'paid' } },
       { $group: { _id: null, total: { $sum: '$totalAmount' } } }
     ]);
-    res.json({
+    return successResponse(res, 'Dashboard stats fetched', {
       users: userCount,
       orders: orderCount,
       meals: mealCount,
@@ -25,7 +26,7 @@ export const getDashboardStats = async (req, res, next) => {
 export const getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find().populate('user', 'name email').sort({ createdAt: -1 });
-    res.json(orders);
+    return successResponse(res, 'Orders fetched', orders);
   } catch (err) {
     next(err);
   }
@@ -33,12 +34,16 @@ export const getAllOrders = async (req, res, next) => {
 
 export const updateOrderStatus = async (req, res, next) => {
   try {
-    const { status, paymentStatus } = req.body;
-    const order = await Order.findByIdAndUpdate(req.params.id, {
-      ...(status && { status }),
-      ...(paymentStatus && { paymentStatus })
-    }, { new: true });
-    res.json(order);
+    const { orderStatus, paymentStatus } = req.body;
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...(orderStatus && { orderStatus }),
+        ...(paymentStatus && { paymentStatus })
+      },
+      { new: true }
+    );
+    return successResponse(res, 'Order updated', order);
   } catch (err) {
     next(err);
   }

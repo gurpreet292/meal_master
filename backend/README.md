@@ -12,6 +12,22 @@ cp .env.example .env
 npm run dev
 ```
 
+Seed sample data (admin + meals):
+
+```bash
+npm run seed
+```
+
+To destroy seed data:
+
+```bash
+npm run seed -- --destroy
+```
+
+Optional env overrides:
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+
 APIs:
 - `POST /api/auth/register` — register user
 - `POST /api/auth/login` — login
