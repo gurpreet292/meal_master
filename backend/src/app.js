@@ -21,6 +21,7 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
+app.get('/', (req, res) => successResponse(res, 'OK', { status: 'running' }));
 app.get('/api/health', (req, res) => successResponse(res, 'OK', { status: 'healthy' }));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
