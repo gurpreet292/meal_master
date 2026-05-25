@@ -16,8 +16,23 @@ import { successResponse } from './utils/responseHandler.js';
 
 const app = express();
 
+const localOrigins = ['http://localhost:5173', 'http://localhost:3000'];
+const configuredOrigins = (process.env.FRONTEND_ORIGIN || '')
+	.split(',')
+	.map((origin) => origin.trim())
+	.filter(Boolean);
+const allowedOrigins = new Set([...localOrigins, ...configuredOrigins]);
+
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+	origin(origin, callback) {
+		if (!origin || allowedOrigins.has(origin)) {
+			return callback(null, true);
+		}
+
+		return callback(new Error(`CORS blocked for origin: ${origin}`));
+	}
+}));
 app.use(morgan('dev'));
 app.use(express.json());
 

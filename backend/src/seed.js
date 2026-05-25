@@ -51,8 +51,13 @@ const seed = async () => {
     await Meal.deleteMany();
     await User.deleteMany();
 
-    const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@mealmaster.com';
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminEmail = process.env.ADMIN_EMAIL;
+
+    if (!adminPassword || !adminEmail) {
+      throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD are required to seed');
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(adminPassword, salt);
 

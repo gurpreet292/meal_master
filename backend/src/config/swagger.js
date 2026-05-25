@@ -8,8 +8,11 @@ const swaggerDefinition = {
     description: 'Backend API documentation for Meal Master.'
   },
   servers: [
+    ...(globalThis.process?.env?.RENDER_EXTERNAL_URL
+      ? [{ url: globalThis.process.env.RENDER_EXTERNAL_URL, description: 'Production server' }]
+      : []),
     {
-      url: 'http://localhost:5000',
+      url: `http://localhost:${globalThis.process?.env?.PORT || 5000}`,
       description: 'Local server'
     }
   ],
