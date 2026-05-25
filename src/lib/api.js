@@ -59,7 +59,10 @@ const request = async (path, options = {}) => {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     const message = data?.message || 'Request failed';
-    throw new Error(message);
+    const err = new Error(message);
+    err.details = data?.data || null;
+    err.status = res.status;
+    throw err;
   }
   return data;
 };

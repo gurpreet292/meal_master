@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+/* eslint-disable react-refresh/only-export-components */
 import api from '@/lib/api';
 import mockApi from '@/lib/mockApi';
 
@@ -9,12 +10,29 @@ export const AppProvider = ({ children }) => {
     ...item,
     name: item.name || item.title || 'Untitled Meal'
   });
-  const [user, setUser] = useState(() => api.getCurrentUser());
+  const [user, setUser] = useState(null);
   const [recipes, setRecipes] = useState([]);
   const [plan, setPlan] = useState(null);
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
+    // On startup: if a token exists, validate it with backend and load profile
+    const initAuth = async () => {
+      // remove any legacy frontend-only demo current-user to avoid silent sign-in
+      try { localStorage.removeItem('mm_current_user_v2'); } catch (e) { console.debug('Could not clear legacy demo user', e); }
+      const candidate = api.getCurrentUser();
+      if (!candidate) return;
+      try {
+        const profile = await api.getProfile();
+        if (profile) setUser({ id: profile.id ?? candidate.id, email: profile.email ?? candidate.email, role: profile.role ?? candidate.role, name: profile.name ?? candidate.name });
+      } catch {
+        // invalid token or backend unreachable — ensure no silent login
+        api.logout();
+        setUser(null);
+      }
+    };
+    initAuth();
+
     let active = true;
     api.getMeals()
       .then((data) => {

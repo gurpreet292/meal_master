@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import PageLayout from './components/layout/PageLayout';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 
 import Landing from './pages/Landing';
 import Auth from './pages/Auth';
@@ -23,7 +24,7 @@ function App() {
         <Route path="/onboarding" element={<Onboarding />} />
         
         {/* Protected Routes inside Layout */}
-        <Route element={<PageLayout />}>
+        <Route element={<ProtectedRoute><PageLayout /></ProtectedRoute>}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/planner" element={<Planner />} />
           <Route path="/recipes" element={<Recipes />} />

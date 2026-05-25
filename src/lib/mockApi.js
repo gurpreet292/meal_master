@@ -174,7 +174,7 @@ const mockApi = {
     // AUTO-SEED DEMO DATA FOR NEW USERS SO THE APP LOOKS STUNNING
     seedDemoDataForUser(user.id);
     
-    write(KEY_CURRENT, user);
+    // Do not automatically persist current user to avoid silent/demo sign-in
     return user;
   },
 
@@ -188,8 +188,7 @@ const mockApi = {
     if (!logs[user.id] || logs[user.id].length === 0) {
       seedDemoDataForUser(user.id);
     }
-
-    write(KEY_CURRENT, user);
+    // Do not automatically persist current user to avoid silent/demo sign-in
     return user;
   },
 

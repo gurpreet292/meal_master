@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, ArrowRight, Sparkles, BarChart3, Users } from 'lucide-react';
@@ -14,25 +14,34 @@ const Auth = () => {
   const navigate = useNavigate();
   const { login: appLogin, register: appRegister } = useApp();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (isLogin) {
-        appLogin({ email, password });
+        console.log('Attempting login with', { email });
+        await appLogin({ email, password });
         navigate('/dashboard');
       } else {
-        appRegister({ name, email, password, preferences: {} });
-        navigate('/onboarding');
+        console.log('Attempting register with', { email, name });
+        await appRegister({ name, email, password, preferences: {} });
+        navigate('/dashboard');
       }
     } catch (err) {
-      alert(err.message || 'Authentication error');
+      console.error('Auth error', err, err?.status, err?.details);
+      const details = err?.details;
+      if (details && Array.isArray(details)) {
+        const msgs = details.map(d => `${d.param}: ${d.msg}`).join('\n');
+        alert(`${err.message}\n${msgs}`);
+      } else {
+        alert(err.message || 'Authentication error');
+      }
     }
   };
 
   return (
     <div className="min-h-screen flex bg-background overflow-hidden">
       {/* Left Side - Beautiful Illustration (Hidden on mobile) */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-sage/20 via-cream to-soft-orange/20 relative items-center justify-center overflow-hidden">
+      <div className="hidden lg:flex w-1/2 bg-linear-to-br from-sage/20 via-cream to-soft-orange/20 relative items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-96 h-96 bg-sage/30 rounded-full blur-3xl" />
           <div className="absolute bottom-10 right-10 w-96 h-96 bg-soft-orange/30 rounded-full blur-3xl" />
@@ -74,7 +83,7 @@ const Auth = () => {
               { icon: Users, text: 'Join our healthy community' }
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-3 text-lg text-foreground">
-                <item.icon className="w-7 h-7 text-sage flex-shrink-0" />
+                <item.icon className="w-7 h-7 text-sage shrink-0" />
                 <span>{item.text}</span>
               </div>
             ))}

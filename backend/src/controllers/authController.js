@@ -39,9 +39,9 @@ export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (!user) return errorResponse(res, 'Invalid credentials', 400);
+    if (!user) return errorResponse(res, 'Invalid credentials. Expected: email in the format user@example.com and password with minimum 6 characters.', 401);
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return errorResponse(res, 'Invalid credentials', 400);
+    if (!match) return errorResponse(res, 'Invalid credentials. Ensure your password is correct. Passwords must be at least 6 characters.', 401);
     const token = signToken(user);
     return successResponse(res, 'Login successful', {
       token,
